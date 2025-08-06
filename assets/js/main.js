@@ -1,5 +1,49 @@
 // Modern SaaS Dashboard JavaScript
 
+// Performance Optimization: Image Lazy Loading
+class ImageLazyLoader {
+    constructor() {
+        this.imageObserver = null;
+        this.init();
+    }
+
+    init() {
+        // Modern browsers lazy loading support
+        if ('loading' in HTMLImageElement.prototype) {
+            this.setupNativeLazyLoading();
+        } else {
+            // Fallback for older browsers
+            this.setupIntersectionObserver();
+        }
+    }
+
+    setupNativeLazyLoading() {
+        const images = document.querySelectorAll('img[data-src]');
+        images.forEach(img => {
+            img.setAttribute('loading', 'lazy');
+            img.src = img.dataset.src;
+            img.classList.add('lazy-loaded');
+        });
+    }
+
+    setupIntersectionObserver() {
+        this.imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.classList.remove('img-placeholder');
+                    img.classList.add('lazy-loaded');
+                    observer.unobserve(img);
+                }
+            });
+        });
+
+        const lazyImages = document.querySelectorAll('img[data-src]');
+        lazyImages.forEach(img => this.imageObserver.observe(img));
+    }
+}
+
 class SaaSDashboard {
     constructor() {
         this.init();
@@ -11,6 +55,8 @@ class SaaSDashboard {
         this.setupMobileMenu();
         this.setupScrollEffects();
         this.initializeCounters();
+        // Initialize lazy loading
+        new ImageLazyLoader();
     }
 
     setupEventListeners() {

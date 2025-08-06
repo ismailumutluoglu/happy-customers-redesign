@@ -4,14 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hakkımızda - Happy Customers</title>
+    
+    <!-- Performance Optimizations -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+    
+    <!-- Critical CSS preload -->
+    <link rel="preload" href="../assets/css/main.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="../assets/css/main.css" /></noscript>
+    
+    <!-- Font optimization -->
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     />
-    <link rel="stylesheet" href="../assets/css/main.css" />
-    <link rel="stylesheet" href="../assets/css/responsive.css" />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+    
+    <!-- Non-critical CSS -->
+    <link rel="preload" href="../assets/css/responsive.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="../assets/css/responsive.css" /></noscript>
   </head>
   <body>
     <!-- Navbar -->
@@ -246,7 +266,24 @@
       </div>
     </footer>
 
-    <script src="../assets/js/main.js"></script>
-    <script src="../assets/js/animations.js"></script>
+    <!-- Async JavaScript loading for better performance -->
+    <script async src="../assets/js/main.js"></script>
+    <script async src="../assets/js/animations.js"></script>
+    
+    <!-- Lazy loading polyfill for older browsers -->
+    <script>
+      // Add lazy loading support for images when added
+      if ('loading' in HTMLImageElement.prototype) {
+        const images = document.querySelectorAll('img[loading="lazy"]');
+        images.forEach(img => {
+          img.src = img.dataset.src || img.src;
+        });
+      } else {
+        // Fallback for browsers that don't support lazy loading
+        const script = document.createElement('script');
+        script.src = 'https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver';
+        document.body.appendChild(script);
+      }
+    </script>
   </body>
 </html>
